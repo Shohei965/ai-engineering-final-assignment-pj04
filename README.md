@@ -5,16 +5,6 @@ Google スプレッドシートに蓄積された大量の質問を自動でク�
 ## 目的 / 背景
 講義中に寄せられる 1000 件規模の質問を効率的に処理し、講師が一括で回答できるようにすることを目的としています。
 
-## 必要な設定
-Google アカウントで OAuth 認証を行いシートを取得します。
-最初の実行時にブラウザが開くので Google ログインを完了してください。
-`.env` には Gemini API キーに加えて OAuth 用のファイルパスを指定します。
-
-```env
-GEMINI_API_KEY=your_gemini_key
-CALLS_PER_MINUTE=60
-GS_CREDENTIALS=credentials.json
-GS_TOKEN=authorized_user.json
 ```
 
 ## インストール
