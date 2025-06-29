@@ -1,8 +1,8 @@
-google-auth
-gspread
+
 pandas
 numpy
 scikit-learn
 aiohttp
 tenacity
 tqdm
+
