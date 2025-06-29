@@ -1,35 +1,39 @@
-# 講義の質疑応答のまとめ機能の作成
+# QA Summarizer
 
-プロジェクトの詳細は、所定のドキュメントを確認すること。
+Google スプレッドシートに蓄積された大量の質問を自動でクラスタリングし、Gemini Flash-2.5 を用いて要約・回答を生成する CLI ツールです。
 
-## システム概要
-大規模講義（最大9000人）における質疑応答を効率化するシステムを実装しました。
+## 目的 / 背景
+講義中に寄せられる 1000 件規模の質問を効率的に処理し、講師が一括で回答できるようにすることを目的としています。
 
-### 主要機能
-1. **質問のクラスタリング**: TF-IDFとコサイン類似度を使用して類似質問を自動グループ化
-2. **質問の要約**: Google Gemini APIを使用して複数質問を統合・要約
-3. **回答案の生成**: AIによる包括的な回答案の自動生成
-4. **リアルタイムUI**: 講師が講義中に即座に使用できるWebインターフェース
+## 必要な設定
+Google アカウントで OAuth 認証を行いシートを取得します。
+最初の実行時にブラウザが開くので Google ログインを完了してください。
+`.env` には Gemini API キーに加えて OAuth 用のファイルパスを指定します。
 
-### 技術スタック
-- **バックエンド**: Python 3.13, Flask
-- **AI/ML**: Google Gemini API, scikit-learn
-- **フロントエンド**: HTML5, JavaScript, Bootstrap 5
-- **データ処理**: pandas, openpyxl
+```env
+GEMINI_API_KEY=your_gemini_key
+CALLS_PER_MINUTE=60
+GS_CREDENTIALS=credentials.json
+GS_TOKEN=authorized_user.json
+```
 
-### パフォーマンス
-- 100質問を約2-3秒で処理
-- 1000質問まで対応可能（約10秒以内）
+## インストール
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
-### セットアップ方法
-詳細は `SETUP_GUIDE.md` を参照してください。
+## 実行例
+```bash
+python -m qa_summarizer.main --sheet-url "https://docs.google.com/spreadsheets/d/..." --max-questions 500
+```
 
-### システム設計
-詳細は `SYSTEM_DESIGN.md` を参照してください。
+## FAQ
+- **レート制限に達した場合**: `CALLS_PER_MINUTE` を減らすか、時間を置いて再実行してください。
 
-## 今後の拡張案
-1. **リアルタイム連携**: 質問フォームとの自動連携
-2. **回答履歴管理**: 過去の回答を学習・再利用
-3. **多言語対応**: 英語等の他言語質問への対応
-4. **分析機能強化**: 質問傾向の可視化・レポート生成
+### 質問急増時の注意点
+質問数が増えるほどクラスタリング処理に時間が掛かります。レート制限を厳しくすると回答生成に時間が掛かるため、処理速度とのバランスを調整してください。
 
+### 回答品質とスピードのトレードオフ
+クラスタ数が多いほど回答の精度は向上しますが、Gemini への呼び出し回数も増え時間が掛かります。`--max-questions` やクラスタリングの閾値を調整して最適なバランスを探してください。
